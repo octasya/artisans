@@ -174,7 +174,7 @@ class ClientQuoteView(discord.ui.View):
         self.artisan_id = artisan_id
 
     @discord.ui.button(label="Valider", style=discord.ButtonStyle.success)
-    async def validate(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def validate(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.client_id:
             await interaction.response.send_message("Vous n'êtes pas concerné.", ephemeral=True)
             return
@@ -207,7 +207,7 @@ class ClientQuoteView(discord.ui.View):
             await interaction.response.send_message("Erreur lors de la création du salon.", ephemeral=True)
 
     @discord.ui.button(label="Refuser", style=discord.ButtonStyle.danger)
-    async def refuse(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def refuse(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.client_id:
             await interaction.response.send_message("Vous n'êtes pas concerné.", ephemeral=True)
             return
@@ -227,11 +227,11 @@ class QuoteView(discord.ui.View):
         self.artisan_id = artisan_id
 
     @discord.ui.button(label="Envoyer un devis", style=discord.ButtonStyle.success)
-    async def send_quote(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def send_quote(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(QuoteModal(self.guild_id, self.client_id, self.artisan_id))
 
     @discord.ui.button(label="Refuser", style=discord.ButtonStyle.danger)
-    async def refuse(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def refuse(self, interaction: discord.Interaction, button: discord.ui.Button):
         client = bot.get_user(self.client_id)
         if client:
             await client.send("Votre demande de devis a été refusée.")
@@ -277,23 +277,23 @@ class RatingView(discord.ui.View):
         )
 
     @discord.ui.button(label="1", style=discord.ButtonStyle.secondary)
-    async def rate1(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def rate1(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.rate(interaction, 1)
 
     @discord.ui.button(label="2", style=discord.ButtonStyle.secondary)
-    async def rate2(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def rate2(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.rate(interaction, 2)
 
     @discord.ui.button(label="3", style=discord.ButtonStyle.secondary)
-    async def rate3(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def rate3(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.rate(interaction, 3)
 
     @discord.ui.button(label="4", style=discord.ButtonStyle.secondary)
-    async def rate4(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def rate4(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.rate(interaction, 4)
 
     @discord.ui.button(label="5", style=discord.ButtonStyle.secondary)
-    async def rate5(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def rate5(self, interaction: discord.Interaction, button: discord.ui.Button):
         await self.rate(interaction, 5)
 
 
@@ -307,7 +307,7 @@ class JobStatusView(discord.ui.View):
         self.client_id = client_id
 
     @discord.ui.button(label="Démarrer", style=discord.ButtonStyle.primary)
-    async def start(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def start(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.artisan_id:
             await interaction.response.send_message("Seul l'artisan peut démarrer.", ephemeral=True)
             return
@@ -320,7 +320,7 @@ class JobStatusView(discord.ui.View):
         await interaction.response.send_message("Vous avez démarré la prestation.", ephemeral=True)
 
     @discord.ui.button(label="Terminer", style=discord.ButtonStyle.success)
-    async def terminer(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def terminer(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.artisan_id:
             await interaction.response.send_message("Seul l'artisan peut terminer.", ephemeral=True)
             return
@@ -340,7 +340,7 @@ class JobStatusView(discord.ui.View):
             await interaction.response.send_message("Client introuvable.", ephemeral=True)
 
     @discord.ui.button(label="Appeler un modérateur", style=discord.ButtonStyle.danger)
-    async def call_mod(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def call_mod(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id not in {self.artisan_id, self.client_id}:
             await interaction.response.send_message(
                 "Seuls le client ou l'artisan peuvent appeler un modérateur.", ephemeral=True
@@ -394,7 +394,7 @@ class MainMenuView(discord.ui.View):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="Annuaire", style=discord.ButtonStyle.primary)
-    async def annuaire(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def annuaire(self, interaction: discord.Interaction, button: discord.ui.Button):
         embed = discord.Embed(title="Annuaire des artisans")
         for uid, info in artisans.items():
             note = sum(ratings.get(uid, [])) / len(ratings.get(uid, [1]))
@@ -408,15 +408,15 @@ class MainMenuView(discord.ui.View):
             await interaction.followup.send(view=artisan_view(uid), ephemeral=True)
 
     @discord.ui.button(label="S'inscrire", style=discord.ButtonStyle.success)
-    async def register(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def register(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(RegisterModal())
 
     @discord.ui.button(label="Mise à jour", style=discord.ButtonStyle.secondary)
-    async def update(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def update(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(UpdateModal(interaction.user.id))
 
     @discord.ui.button(label="Profil", style=discord.ButtonStyle.secondary)
-    async def profil(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def profil(self, interaction: discord.Interaction, button: discord.ui.Button):
         info = artisans.get(interaction.user.id)
         if not info:
             await interaction.response.send_message("Vous n'êtes pas inscrit.", ephemeral=True)
@@ -433,11 +433,11 @@ class MainMenuView(discord.ui.View):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Recherche", style=discord.ButtonStyle.primary)
-    async def search(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def search(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.send_modal(SearchModal())
 
     @discord.ui.button(label="Top", style=discord.ButtonStyle.primary)
-    async def top(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def top(self, interaction: discord.Interaction, button: discord.ui.Button):
         sorted_artisans = sorted(artisans.items(), key=lambda a: sum(ratings.get(a[0], [])) / len(ratings.get(a[0], [1])), reverse=True)
         embed = discord.Embed(title="Top Artisans")
         for uid, info in sorted_artisans[:5]:
@@ -446,7 +446,7 @@ class MainMenuView(discord.ui.View):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Stats", style=discord.ButtonStyle.primary)
-    async def stats(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def stats(self, interaction: discord.Interaction, button: discord.ui.Button):
         total_artisans = len(artisans)
         total_jobs = sum(info.get("jobs", 0) for info in artisans.values())
         total_ratings = sum(len(ratings.get(uid, [])) for uid in artisans)
@@ -457,14 +457,14 @@ class MainMenuView(discord.ui.View):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @discord.ui.button(label="Annonce", style=discord.ButtonStyle.danger)
-    async def annonce(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def annonce(self, interaction: discord.Interaction, button: discord.ui.Button):
         if not any(r.permissions.administrator for r in getattr(interaction.user, "roles", [])):
             await interaction.response.send_message("Permission requise.", ephemeral=True)
             return
         await interaction.response.send_modal(AnnouncementModal())
 
     @discord.ui.button(label="Retirer", style=discord.ButtonStyle.danger)
-    async def retirer(self, button: discord.ui.Button, interaction: discord.Interaction):
+    async def retirer(self, interaction: discord.Interaction, button: discord.ui.Button):
         artisans.pop(interaction.user.id, None)
         ratings.pop(interaction.user.id, None)
         save_data()
