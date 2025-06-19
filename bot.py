@@ -32,8 +32,9 @@ def save_data():
             {"artisans": artisans, "ratings": ratings, "comments": comments}, f
         )
 
-# ID du canal où le menu principal sera envoyé
-HOME_CHANNEL_ID = 123456789012345678  # à modifier
+# ID des canaux où les tableaux de bord seront envoyés
+ARTISAN_CHANNEL_ID = 123456789012345678  # à modifier
+CLIENT_CHANNEL_ID = 987654321098765432  # à modifier
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -388,7 +389,7 @@ def artisan_view(artisan_id: int) -> discord.ui.View:
 
 
 class MainMenuView(discord.ui.View):
-    """Menu principal présenté aux utilisateurs."""
+    """Menu général utilisé comme base pour les tableaux de bord."""
 
     def __init__(self):
         super().__init__(timeout=None)
@@ -471,11 +472,41 @@ class MainMenuView(discord.ui.View):
         await interaction.response.send_message("Vous avez été retiré de l'annuaire.", ephemeral=True)
 
 
+class ArtisanDashboardView(MainMenuView):
+    """Tableau de bord destiné aux artisans."""
+
+    def __init__(self):
+        super().__init__()
+        # retirer les boutons réservés aux clients
+        for label in ["Annuaire", "Recherche", "Top"]:
+            for child in list(self.children):
+                if isinstance(child, discord.ui.Button) and child.label == label:
+                    self.remove_item(child)
+
+
+class ClientDashboardView(MainMenuView):
+    """Tableau de bord destiné aux clients."""
+
+    def __init__(self):
+        super().__init__()
+        # retirer les boutons réservés aux artisans
+        for label in ["S'inscrire", "Mise à jour", "Profil", "Annonce", "Retirer"]:
+            for child in list(self.children):
+                if isinstance(child, discord.ui.Button) and child.label == label:
+                    self.remove_item(child)
+
 @bot.event
 async def on_ready():
-    channel = bot.get_channel(HOME_CHANNEL_ID)
-    if channel:
-        await channel.send("Menu Artisans", view=MainMenuView())
+    artisan_channel = bot.get_channel(ARTISAN_CHANNEL_ID)
+    if artisan_channel:
+        await artisan_channel.send(
+            "Tableau de bord artisans", view=ArtisanDashboardView()
+        )
+    client_channel = bot.get_channel(CLIENT_CHANNEL_ID)
+    if client_channel:
+        await client_channel.send(
+            "Tableau de bord clients", view=ClientDashboardView()
+        )
     print(f"Logged in as {bot.user}")
 
 

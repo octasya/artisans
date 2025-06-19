@@ -5,7 +5,17 @@ Ce dépôt contient un bot Discord simplifié pour gérer un annuaire d'artisans
 - `bot.py` : script principal du bot utilisant `discord.py`.
 - `data.json` : fichier où sont conservées les inscriptions et les notes.
 
-Remplacez `TOKEN` dans `bot.py` par le token de votre application Discord et `HOME_CHANNEL_ID` par l'identifiant du canal où le menu principal doit apparaître.
+Remplacez `TOKEN` dans `bot.py` par le token de votre application Discord. Deux
+variables doivent également être configurées pour recevoir les tableaux de bord :
+
+- `ARTISAN_CHANNEL_ID` – identifiant du salon où sera publié le tableau de bord
+  des artisans.
+- `CLIENT_CHANNEL_ID` – identifiant du salon réservé aux clients.
+
+Au démarrage du bot, deux messages sont envoyés dans ces salons pour
+afficher respectivement le tableau de bord des artisans et celui des
+clients. Chaque tableau de bord contient uniquement les boutons utiles à
+l'audience concernée.
 
 ## Fonctionnalités principales
 
@@ -26,3 +36,5 @@ Remplacez `TOKEN` dans `bot.py` par le token de votre application Discord et `HO
 15. Statistiques globales et bouton pour les administrateurs afin d'envoyer une annonce à tous les artisans.
 16. Dans chaque salon de prestation, un bouton permet d'appeler un modérateur en cas de litige.
 17. Suivi de l'état de chaque commande (en attente, en cours, terminé ou litige) via des boutons dans le salon privé.
+18. Deux tableaux de bord distincts pour les artisans et pour les clients,
+    chacun accessible dans son salon dédié.
